@@ -1,29 +1,28 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateDonationInput } from './dto/create-donation.input';
 
 @Injectable()
 export class DonationService {
   constructor(private prisma: PrismaService){}
 
-  async create(createDonationInput: CreateDonationInput) {
+  async create(createDonationInput: Prisma.DonationCreateInput) {
     const donation = await this.prisma.donation.create({
-      data: {
-        count: createDonationInput.count,
-        displayName: createDonationInput.displayName,
-        email: createDonationInput.email
-      }
+      data: createDonationInput
     })
     return donation
   }
 
-  async findAll() {
-    return await this.prisma.donation.findMany();
+  async findAll(orderBy?: {field?: string; direction?: string}) {
+    const {field = 'createAt', direction = 'desc'} = orderBy || {}
+    return await this.prisma.donation.findMany({
+      orderBy: { [field]: direction}
+    });
   }
 
-  async findOne(id: number) {
+  async findOne(donationWhereUniqueInput: Prisma.DonationWhereUniqueInput) {
     return await this.prisma.donation.findUnique({
-      where: { id }
+      where: donationWhereUniqueInput
     });
   }
 }
