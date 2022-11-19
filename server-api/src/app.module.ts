@@ -14,7 +14,11 @@ import { ConfigModule } from '@nestjs/config';
     playground: false,
     typePaths: ['./**/*.graphql'],
     plugins: [ApoloServerLanding],
-    resolvers: {DateTime: GraphQLDateTime}
+    resolvers: {DateTime: GraphQLDateTime},
+    subscriptions: {
+      'graphql-ws': true,
+      'subscriptions-transport-ws': true
+    }
   }), DonationModule, PrismaModule, ConfigModule.forRoot({
     isGlobal: true
   })],
